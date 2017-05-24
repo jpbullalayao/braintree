@@ -5,7 +5,7 @@ class BraintreeCCProcessor
 	@@people = {}
 
 	def add_card(person_name, card_number, limit) 
-		card_valid = validate_card(card_number)
+		card_valid = valid_card?(card_number)
 
 		person = {}
 		person[:name] = person_name
@@ -44,7 +44,7 @@ class BraintreeCCProcessor
 		end
 	end
 
-	def validate_card(card_number)
+	def valid_card?(card_number)
 		luhn = Luhn.new 
 		luhn.card_valid?(card_number)
 	end
@@ -59,6 +59,7 @@ class BraintreeCCProcessor
 
 	def summarize
 		sorted_people = @@people.keys.sort 
+		summary       = ''
 
 		sorted_people.each do |person|
 			person_hash   = @@people["#{person}"]
@@ -70,8 +71,11 @@ class BraintreeCCProcessor
 				line_to_print += amount_with_dollar_sign(person_hash[:balance])
 			end
 
+			summary += "#{line_to_print}\n"
 			print "#{line_to_print}\n"
 		end
+
+		summary
 	end
 
 	def delegate_command(command, stdin) 
